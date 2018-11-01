@@ -40,10 +40,10 @@ namespace AdParcer
     public class AdPrepared1
     {
         public int Id { get; set; }
-        public string Title { get; set; }
         public string Href { get; set; }
-        public double Price { get; set; }
+        public string Title { get; set; }
         public string Location { get; set; }
+        public double Price { get; set; }        
         public string Currency { get; set; }
     }
     public class Preparer1Ad
@@ -75,7 +75,7 @@ namespace AdParcer
     }
     public static class AdHelper
     {
-        public static string ToStringFormat1(this AdPrepared1 ad)
+        public static string ToString(this AdPrepared1 ad)
         {
             return $"[AD \n\tId={ad.Id}, \n\tTitle={ad.Title}, \n\tHref={ad.Href}, \n\tPrice={ad.Price}{ad.Currency}, \n\tLocation={ad.Location}]";
         }
@@ -89,29 +89,29 @@ namespace AdParcer
         public string Location { get; set; }
     }
 
-    class AdOlxDirtyComparer : EqualityComparer<AdOlxDirty>
+    class AdOlxDirtyComparer : IEqualityComparer<AdOlxDirty>
     {
-        public override bool Equals(AdOlxDirty ad1, AdOlxDirty ad2)
+        public bool Equals(AdOlxDirty ad1, AdOlxDirty ad2)
         {
             return ad1.Id.Equals(ad2.Id);
         }
 
-        public override int GetHashCode(AdOlxDirty ad)
+        public int GetHashCode(AdOlxDirty ad)
         {
             int hCode = ad.Id; //ad.id ^ ad.href ^ ad.price ^ ad.title;
             // TODO: заменить на код
             return hCode.GetHashCode();
         }
     }
-    public class AdPrepared1Comparer : EqualityComparer<AdPrepared1>
+    public class AdPrepared1Comparer : IEqualityComparer<AdPrepared1>
     {
-        public override bool Equals(AdPrepared1 ad1, AdPrepared1 ad2)
+        public bool Equals(AdPrepared1 ad1, AdPrepared1 ad2)
         {
             bool equal = ad1.Id.Equals(ad2.Id);
             return equal;
         }
 
-        public override int GetHashCode(AdPrepared1 ad)
+        public int GetHashCode(AdPrepared1 ad)
         {
             int hCode = ad.Id; //ad.id ^ ad.href ^ ad.price ^ ad.title;
             // TODO: hCode.GetHashCode() заменить на код

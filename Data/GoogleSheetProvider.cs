@@ -13,11 +13,11 @@ using Google.Apis.Http;
 
 namespace Data
 {
-    public class GoogleSheetProvider<T> where T : class
+    public class GoogleSheetProvider<T> : IRepository<T> where T : class
     {
         private readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
-        private readonly string _applicationName = "My Project 72320";
-        private readonly string _pathCredential = "client_secret.json";
+        private readonly string _applicationName;
+        private readonly string _pathCredential;
         private SheetsService _service;
         private IConfigurableHttpClientInitializer _credential;
         private readonly string _spreadsheetId;
@@ -30,12 +30,12 @@ namespace Data
             _range = range;
         }
 
-        private IConfigurableHttpClientInitializer GetSheetCredential(string pathCredential, string[] scopes)
+        private IConfigurableHttpClientInitializer GetSheetCredential()
         {
             if (_credential == null)
-                using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream(_pathCredential, FileMode.Open, FileAccess.Read))
                 {
-                    _credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
+                    _credential = GoogleCredential.FromStream(stream).CreateScoped(_scopes);
                 }
             return _credential;
         }
@@ -89,7 +89,7 @@ namespace Data
         #endregion не проверено 
 
         #region получение данных
-        public static List<T> GetValues<T>(SheetsService service, String spreadsheetId, String range) where T : class
+        private List<T> GetValues(SheetsService service, String spreadsheetId, String range) 
         {
             List<T> values = new List<T>();
 
@@ -119,8 +119,8 @@ namespace Data
                     m = MappedFields(typeof(T), row);
                     continue;
                 }
-                    
-                if (!DataMapper<T>.Read(m, row, out T value))
+
+                if (!DataMapper.Read(m, row, out T value))
                     throw new Exception($"not read in {typeof(T)}");
                 values.Add(value);
             }
@@ -161,7 +161,7 @@ namespace Data
             return m;
         }
 
-        class DataMapper<T> where T : class
+        class DataMapper
         {
             public static string GetFieldName(MapFields mapFields, int index)
             {
@@ -205,15 +205,6 @@ namespace Data
                 }                
             }
         }
-
-        public List<T> Get(string range)
-        {
-            return GetValues<T>(GetSheetsService(GetSheetCredential(_pathCredential, _scopes), _applicationName), _spreadsheetId, range);
-        }
-        public List<T> Get()
-        {
-            return GetValues<T>(GetSheetsService(GetSheetCredential(_pathCredential, _scopes), _applicationName), _spreadsheetId, _range);
-        }
         #endregion
         #region не проверено
         //private static void UpdatGoogleSheetinBatch(IList<IList<Object>> values, string spreadsheetId, string newRange, SheetsService service)
@@ -225,24 +216,41 @@ namespace Data
         //    var response = request.Execute();
         //}
         #endregion
-        public static void CreateEntry(IList<object> objList, string spreadsheetId, string range, SheetsService service)
+        private static void CreateEntry(IList<object> objList, string spreadsheetId, string range, SheetsService service)
         {
             var valueRange = new ValueRange();
-
-            //var oblist = new List<object>() { "Hello!", "222" };
             valueRange.Values = new List<IList<object>> { objList };
 
             var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var appendReponse = appendRequest.Execute();
         }
-        public void Insert(IList<object> objList, string range)
+        public IEnumerable<T> GetAll()
         {
-            CreateEntry(objList, _spreadsheetId, range, GetSheetsService(GetSheetCredential(_pathCredential, _scopes), _applicationName));
+            return GetValues(GetSheetsService(GetSheetCredential(), _applicationName), _spreadsheetId, _range);
         }
-        public void Insert(IList<object> objList)
+
+        public T Get(int id)
         {
-            CreateEntry(objList, _spreadsheetId, _range, GetSheetsService(GetSheetCredential(_pathCredential, _scopes), _applicationName));
+            throw new NotImplementedException();
+        }
+
+        public void Create(T item)
+        {
+            var propertyes = item.GetType().GetProperties().Select(a => a.GetValue(item, null));
+            List<object> list = new List<object>(propertyes);
+
+            CreateEntry(list, _spreadsheetId, _range, GetSheetsService(GetSheetCredential(), _applicationName));
+        }
+
+        public void Update(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

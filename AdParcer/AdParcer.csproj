@@ -47,6 +47,7 @@
     <Compile Include="Ad.cs" />
     <Compile Include="CommonInterfaces.cs" />
     <Compile Include="Olx\OlxParcer.cs" />
+    <Compile Include="Olx\ParcePreparerProduct.cs" />
     <Compile Include="Olx\ParcerMenu.cs" />
     <Compile Include="Olx\ParcerProduct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

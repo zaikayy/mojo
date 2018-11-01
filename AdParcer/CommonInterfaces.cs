@@ -25,12 +25,6 @@ namespace AdParcer
         void SetCSD(ICsd CSD);
     }
 
-    // проверка данных по схеме
-    public interface IDataMapper : IDataValidator
-    {
-        bool CheckCSD<T>(IContainer<T> container);
-    }
-
     // маппер данных
     public interface IDataParser
     {
