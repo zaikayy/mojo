@@ -6,7 +6,7 @@ using System.Text;
 using CommonClassLibrary;
 using HtmlAgilityPack;
 
-namespace AdParcer.Olx
+namespace AdParcer
 {
     abstract public class Parcer : IDataParser
     {

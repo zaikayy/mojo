@@ -1,16 +1,16 @@
-﻿using System;
+﻿using AdParcer.Rozetka.Entity;
+using HtmlAgilityPack;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
-using AdParcer.Olx.Entity;
-using HtmlAgilityPack;
+using System.Threading.Tasks;
 
-namespace AdParcer.Olx
+namespace AdParcer.Rozetka
 {
-    /// <summary>
-    /// Парсер товаров
-    /// </summary>
-    public class ParcerProduct : Parcer, IEnumerable<AdOlxDirty>
+    public class RozetkaProductParcer : Parcer, IEnumerable<ProductDirty>
     {
         private HtmlDocument _doc;
         private ICPath _initPath;
@@ -23,48 +23,30 @@ namespace AdParcer.Olx
             if (nodesToRemove != null)
                 foreach (HtmlNode node in nodesToRemove)
                     node.Remove();
-        }        
+        }
 
-        public IEnumerable<AdOlxDirty> Get()
+        public IEnumerable<ProductDirty> Get()
         {
             Select(_currentPath);
-            HtmlNodeCollection nodes = _doc?.DocumentNode?.SelectNodes(".//tr[@class='wrap']");
+            HtmlNodeCollection nodes = _doc?.DocumentNode?
+                .SelectNodes(".//div[@class='g-i-tile-l g-i-tile-catalog-hover-left-side clearfix']")?.FirstOrDefault()
+                .SelectNodes(".//div[@class='g-i-tile g-i-tile-catalog']");
 
             //			HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes(".//[not(parent::table[@class='fixed offers breakword no-results-table'])]//tr[@class='wrap']");
             if (nodes == null)
                 yield break;
 
-            foreach (HtmlNode title in nodes)
+            foreach (HtmlNode adProductNode in nodes)
             {
-                string s = title.InnerHtml;
+                string sId = adProductNode.SelectSingleNode(".//div[@class='g-id']").InnerText.Trim();
+                int.TryParse(sId, out int id);
+                HtmlNode nameAndHrefNode = adProductNode.SelectSingleNode(".//div[@class='g-i-tile-i-title clearfix']");
+                string href = nameAndHrefNode.SelectSingleNode(".//a").Attributes["href"].Value;
+                string title = nameAndHrefNode.InnerText.Trim();
+                string category = "видеокарты";
+                string priceWithCurrency = adProductNode.SelectSingleNode(".//div[@class='g-price-uah']")?.InnerText.Trim();
 
-                string location = "";
-                try
-                {
-                    HtmlNode n = title.SelectSingleNode(".//td[@valign='bottom']");
-                    n = n.SelectSingleNode(".//div[@class='space rel']");
-                    location = n.SelectSingleNode(".//small [@class='breadcrumb x-normal']").InnerText.Trim();
-                }
-                catch { }
-
-                int id = 0;
-                try
-                {
-                    id = int.Parse(title.SelectSingleNode(".//table").Attributes["data-id"].Value);
-                }
-                catch { }
-
-                string sNodePrev1 = ".//h3[@class='x-large lheight20 margintop5']";
-                string sNodePrev2 = ".//h3[@class='lheight22 margintop5']";
-
-                HtmlNode node = title.SelectSingleNode(sNodePrev1) ?? title.SelectSingleNode(sNodePrev2); ;
-
-                string sTitle = node.SelectSingleNode(".//strong").InnerText;
-                string href = node.SelectSingleNode(".//a").Attributes["href"].Value;
-                node = title.SelectSingleNode(".//p[@class='price']").SelectSingleNode(".//strong");
-                string sPrice = node.InnerText.Replace(" ", "");
-
-                yield return new AdOlxDirty { Id = id, Title = sTitle, Href = href, PriceWithCurrency = sPrice, Location = location };
+                yield return new ProductDirty { Id = id.ToString(), Title = title, Href = href, PriceWithCurrency = priceWithCurrency ?? "0 грн.", Category = category };
             }
 
             if (TryParseNextPage(_doc, out string nextHref))
@@ -79,8 +61,10 @@ namespace AdParcer.Olx
         }
 
         private bool TryParseNextPage(HtmlDocument doc, out string path)
-        {
+        {            
             path = "";
+            return false;
+
             HtmlNode node = doc.DocumentNode.SelectSingleNode(".//div[@class='pager rel clr']");
             if (node == null)
                 return false;
@@ -109,7 +93,7 @@ namespace AdParcer.Olx
             RemoveOffset(_doc);
         }
 
-        public IEnumerator<AdOlxDirty> GetEnumerator()
+        public IEnumerator<ProductDirty> GetEnumerator()
         {
             _currentPath = new CPath(_initPath.GetPath());
             return Get().GetEnumerator();
@@ -120,7 +104,7 @@ namespace AdParcer.Olx
             return this.GetEnumerator();
         }
 
-        public ParcerProduct(IConnectionStringBuilder conn, ICPath initPath)
+        public RozetkaProductParcer(IConnectionStringBuilder conn, ICPath initPath)
         {
             SetConnection(conn);
             _initPath = initPath; ;

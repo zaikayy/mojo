@@ -1,24 +1,21 @@
-﻿using AdParcer;
-using AdParcer.Olx;
-using Data;
+﻿using Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ParcerOlxSite
+namespace Robot
 {
-    class ParcerRobot<T> where T : class
+    public class ParcerRobot<T> where T : class
     {
         private IEnumerable<T> _preparerProduct;
         private ConcurrentQueue<T> _buffer;
         private DataKeeper<T> _dataKeeper;
 
-        private Task DirtParceOlx() 
+        private Task DirtParceOlx()
         {
             return Task.Run(() =>
             {
@@ -50,7 +47,7 @@ namespace ParcerOlxSite
         }
 
         public void Run()
-        {            
+        {
             while (true)
             {
                 Task taskRead = RunRead();

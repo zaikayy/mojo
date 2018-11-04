@@ -1,13 +1,11 @@
-﻿using System;
+﻿using AdParcer.Olx.Entity;
+using AdParcer.Olx.Helpers;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdParcer.Olx
 {
-    public class PreparerProductDecorator : IEnumerable<AdPrepared1>
+    public class OlxPreparerProductDecorator : IEnumerable<AdPrepared1>
     {
         private readonly IEnumerable<AdOlxDirty> _enumerator;
         public IEnumerator<AdPrepared1> GetEnumerator()
@@ -23,7 +21,7 @@ namespace AdParcer.Olx
             return this.GetEnumerator();
         }
 
-        public PreparerProductDecorator(IEnumerable<AdOlxDirty> enumerator) 
+        public OlxPreparerProductDecorator(IEnumerable<AdOlxDirty> enumerator) 
         {
             _enumerator = enumerator;
         }

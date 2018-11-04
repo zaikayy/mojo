@@ -14,6 +14,9 @@ using Data;
 using AdParcer;
 using AdParcer.Olx;
 using System.Collections.Concurrent;
+using Robot;
+using AdParcer.Olx.Entity;
+using AdParcer.Olx.Comparators;
 //using Data;
 
 namespace ParcerOlxSite
@@ -102,11 +105,11 @@ namespace ParcerOlxSite
             ConcurrentQueue<AdPrepared1> buffer = new ConcurrentQueue<AdPrepared1>();
             IEqualityComparer<AdPrepared1> comparer = new AdPrepared1Comparer();
 
-            GoogleSheetProvider<AdPrepared1> repository = new GoogleSheetProvider<AdPrepared1>("My Project 72320", "client_secret.json", "1kE61PAN5zG_Ygx98PmaRxKZp0L1_NxSelEfOFC2owJs", "Class Data!A1:F");
+            GoogleSheetProvider<AdPrepared1> repository = new GoogleSheetProvider<AdPrepared1>("My Project 72320", "client_secret.json", "1kE61PAN5zG_Ygx98PmaRxKZp0L1_NxSelEfOFC2owJs", "Классификатор - розетка!A1:F");
             DataKeeper<AdPrepared1> dataKeeper = new DataKeeper<AdPrepared1>(repository, buffer, comparer);
 
             IEnumerable<AdOlxDirty> parcerDirtProduct = new ParcerProduct(new Connection("https://www.olx.ua"), new CPath("/elektronika/kompyutery-i-komplektuyuschie/komplektuyuschie-i-aksesuary/videokarty/dnepr/"));
-            IEnumerable<AdPrepared1> parcer = new PreparerProductDecorator(parcerDirtProduct);
+            IEnumerable<AdPrepared1> parcer = new OlxPreparerProductDecorator(parcerDirtProduct);
             ParcerRobot<AdPrepared1> robo = new ParcerRobot<AdPrepared1>(parcer, dataKeeper, buffer);
             robo.Run();
 			Console.Write("Press any key to continue . . . ");

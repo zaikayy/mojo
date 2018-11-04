@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9FC43FCA-F2EF-4370-8BB6-A7CC14CE806F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CommonClassLibrary</RootNamespace>
-    <AssemblyName>CommonClassLibrary</AssemblyName>
+    <ProjectGuid>{2A7A8D89-D0A1-467C-AD26-7EC51D8E2908}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ParcerRozetka</RootNamespace>
+    <AssemblyName>ParcerRozetka</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,11 +42,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collection\Tree.cs" />
-    <Compile Include="FileOperation.cs" />
-    <Compile Include="ParcerCurrency.cs" />
-    <Compile Include="ParcerPrice.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="client_secret.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdParcer\AdParcer.csproj">
+      <Project>{1d7904cd-7c15-459f-b63d-74c61eb4926d}</Project>
+      <Name>AdParcer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{5a30baa9-6d95-49e2-a1a2-1acd4a30d4f5}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Robot\Robot.csproj">
+      <Project>{82643c3c-0ad3-4e54-ad98-6c036bdf1c0a}</Project>
+      <Name>Robot</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

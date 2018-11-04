@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdParcer", "AdParcer\AdParc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonClassLibrary", "CommonClassLibrary\CommonClassLibrary.csproj", "{9FC43FCA-F2EF-4370-8BB6-A7CC14CE806F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Robot", "Robot\Robot.csproj", "{82643C3C-0AD3-4E54-AD98-6C036BDF1C0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParcerRozetka", "ParcerRozetka\ParcerRozetka.csproj", "{2A7A8D89-D0A1-467C-AD26-7EC51D8E2908}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{9FC43FCA-F2EF-4370-8BB6-A7CC14CE806F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FC43FCA-F2EF-4370-8BB6-A7CC14CE806F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FC43FCA-F2EF-4370-8BB6-A7CC14CE806F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82643C3C-0AD3-4E54-AD98-6C036BDF1C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82643C3C-0AD3-4E54-AD98-6C036BDF1C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82643C3C-0AD3-4E54-AD98-6C036BDF1C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82643C3C-0AD3-4E54-AD98-6C036BDF1C0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7A8D89-D0A1-467C-AD26-7EC51D8E2908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7A8D89-D0A1-467C-AD26-7EC51D8E2908}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7A8D89-D0A1-467C-AD26-7EC51D8E2908}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7A8D89-D0A1-467C-AD26-7EC51D8E2908}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

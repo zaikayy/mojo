@@ -54,7 +54,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParcerRobot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -71,6 +70,10 @@
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{5a30baa9-6d95-49e2-a1a2-1acd4a30d4f5}</Project>
       <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Robot\Robot.csproj">
+      <Project>{82643c3c-0ad3-4e54-ad98-6c036bdf1c0a}</Project>
+      <Name>Robot</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
