@@ -7,14 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace AdParcer.Rozetka
 {
+    class Constraints
+    {
+        public const int MAX_DEPTH_ENTRY = 300;
+        public const int FIRST_PAGE_INDEX = 1;
+    }
     public class RozetkaProductParcer : Parcer, IEnumerable<ProductDirty>
     {
         private HtmlDocument _doc;
-        private ICPath _initPath;
+        private readonly ICPath _initPath;
         private ICPath _currentPath;
+        private int _currentPageNum;
 
         private void RemoveOffset(HtmlDocument doc)
         {
@@ -51,8 +58,11 @@ namespace AdParcer.Rozetka
 
             if (TryParseNextPage(_doc, out string nextHref))
             {
+                _currentPageNum++;
+
                 Thread.Sleep(new Random().Next(1000, 3000));
-                _initPath = new CPath(nextHref);
+                _currentPath = new CPath(nextHref.Replace(connectionStringBuilder.GetCeonnectionString(), string.Empty));
+                
                 foreach (var o in Get())
                 {
                     yield return o;
@@ -63,15 +73,36 @@ namespace AdParcer.Rozetka
         private bool TryParseNextPage(HtmlDocument doc, out string path)
         {            
             path = "";
-            return false;
+            //return false;
+            string sCurrentPage = HttpUtility.ParseQueryString(_currentPath.GetPath()).Get("page");
+            int.TryParse(sCurrentPage, out int tmpCurrentPage);
+            _currentPageNum = Math.Max(tmpCurrentPage, _currentPageNum);
 
-            HtmlNode node = doc.DocumentNode.SelectSingleNode(".//div[@class='pager rel clr']");
+            HtmlNode node = doc.DocumentNode.SelectSingleNode(".//nav[@class='paginator-catalog pos-fix']");
             if (node == null)
                 return false;
 
-            node = node.SelectSingleNode(".//span[@class='fbold next abs large']");
-            if (node == null)
+            HtmlNodeCollection nodes = node.SelectNodes(".//a[@class='blacklink paginator-catalog-l-link']");
+            if (nodes == null)
                 return false;
+
+            var l1 = nodes.Where(a => int.TryParse(a.InnerText.Trim(), out int j));
+
+            var pageList = l1.Select(a => new {
+                Value = int.Parse(a.InnerText.Trim()),
+                Href = a.Attributes["href"].Value
+            }).ToList();
+
+            string nextPageHref = pageList.Where(a => a.Value > _currentPageNum)?.OrderBy(a => a.Value).Select(a => a.Href).FirstOrDefault();
+            path = nextPageHref ?? "";
+            return nextPageHref != null;
+
+            if (nextPageHref == null)
+            {
+                return false;
+            }
+
+            string sNumPage = node.InnerText.Trim();
 
             node = node.SelectSingleNode(".//a");
             if (node == null)
@@ -90,11 +121,12 @@ namespace AdParcer.Rozetka
             _doc = GetDocument(ref content);
 
             //SaveToLog(content, "logProduct.txt");
-            RemoveOffset(_doc);
+            //RemoveOffset(_doc);
         }
 
         public IEnumerator<ProductDirty> GetEnumerator()
         {
+            _currentPageNum = Constraints.FIRST_PAGE_INDEX;
             _currentPath = new CPath(_initPath.GetPath());
             return Get().GetEnumerator();
         }
